@@ -5,14 +5,19 @@ from tqdm import tqdm
 import numpy as np
 class Datasets(Dataset):
 
-    def __init__(self,root_path,split='train',num_catagory=40,npoint=1024) -> None:
+    def __init__(self,root_path,split='train',num_catagory=40,npoint=1024,version='v1') -> None:
         self.root_path=root_path
         self.split=split
         self.num_catagory=num_catagory
         self.cat2id=self._load_catagory()
         self.id2cat=dict()
         self.npoint=npoint
-        self.save_path='datasets/modelnet40'
+        self.version=version
+        if self.version=='v1':
+            self.save_path='datasets/modelnet40_v1'
+        else:
+            self.save_path='datasets/modelnet40'
+        
         for key in self.cat2id:
             self.id2cat[self.cat2id[key]]=key
         self.train_list,self.test_list=self._load_id_list()
@@ -36,8 +41,6 @@ class Datasets(Dataset):
                     points_set=np.loadtxt(index_path,delimiter=',').astype(np.float32).reshape(-1,6)[:,:3]
                     # if self.preprocess:
                     class_id=self.cat2id['_'.join(fid.split('_')[0:-1])]
-                    points_set=self._sample(points_set,self.npoint)
-                    points_set=self._norm(points_set)
                     if i==0:
                         _train_list.append((points_set,class_id))
                     else:
@@ -53,9 +56,9 @@ class Datasets(Dataset):
     
     def __len__(self):
         if self.split is 'train':
-            return len(self.train_list)
+            return len(self.train_list)*2
         else:
-            return len(self.test_list)
+            return len(self.test_list)*2
     def _sample(self,points_set,npoint):
         N,D=points_set.shape
 
@@ -79,8 +82,10 @@ class Datasets(Dataset):
         return point_set
     def _getitem(self,index):
         if self.split is not 'train':
+            index%=len(self.test_list)
             (points_set,class_id)=self.test_list[index]
         else:
+            index%=len(self.train_list)
             (points_set,class_id)=self.train_list[index]
         # # print('index:',index,fid)
         # index_path=os.path.join(self.root_path,'_'.join(fid.split('_')[0:-1]),fid+'.txt')
@@ -92,7 +97,11 @@ class Datasets(Dataset):
         # points_set=points_set.reshape(-1,6)[:,:3]
         # points_set=self._sample(points_set,self.npoint)
         # points_set=self._norm(points_set)
-        return points_set.transpose(1,0),class_id
+        # if self.version=='v1':
+            # points_set=self._sample(points_set,self.npoint) 
+            # points_set=self._norm(points_set)
+            # points_set.transpose(1,0)
+        return points_set,class_id
     def __getitem__(self,index):
         return self._getitem(index)
 

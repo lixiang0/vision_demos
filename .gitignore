@@ -2,4 +2,4 @@ test_pointnet/datasets/__pycache__/
 test_pointnet/datasets/modelnet40_normal_resampled/
 test_pointnet/models/__pycache__/
 *.pth
-datasets/modelnet40
+test_pointnet/datasets/modelnet40
