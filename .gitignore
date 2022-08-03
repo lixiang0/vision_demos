@@ -3,3 +3,7 @@ test_pointnet/datasets/modelnet40_normal_resampled/
 test_pointnet/models/__pycache__/
 *.pth
 test_pointnet/datasets/modelnet40
+test_pointnet/__pycache__/
+test_pointnet/datasets/modelnet40_v1
+test_pointnet/datasets/shapenetcore_partanno_segmentation_benchmark_v0_normal.zip
+test_pointnet/datasets/shapenetcore_partanno_segmentation_benchmark_v0_normal/
