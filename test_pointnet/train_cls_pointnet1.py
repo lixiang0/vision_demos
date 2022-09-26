@@ -8,7 +8,7 @@ import numpy as np
 import torch.nn.functional as F
 DATA_PATH='datasets/modelnet40_normal_resampled'
 train_dataset=Datasets(DATA_PATH,split='train')
-train_dataloader=torch.utils.data.DataLoader(train_dataset,batch_size=2,shuffle=True)
+train_dataloader=torch.utils.data.DataLoader(train_dataset,batch_size=16,shuffle=True)
 
 test_dataset=Datasets(DATA_PATH,split='test')
 test_dataloader=torch.utils.data.DataLoader(test_dataset,batch_size=4,shuffle=True)
@@ -62,7 +62,7 @@ print( "  Params: %s => %s"%( num_params_before_pruning, num_params_after_prunin
 #################################################
 optimizer = torch.optim.Adam(
             model.parameters(),
-            lr=1e-2,
+            lr=1e-3,
             betas=(0.9, 0.999),
             eps=1e-08,
             weight_decay=1e-4
@@ -81,10 +81,10 @@ if use_checkpoint:
         model.load_state_dict(checkpoint['model_state_dict'])
         print('load pretrained model',pth_path)
     else:
-        print('not use pretrained model')
+        print('not contain pre-trained pth,not use pretrained model')
         start_epoch=0 
 else:
-    print('not use pretrained model')
+    print('use_checkpoint is False,not use pretrained model')
     start_epoch=0
 
 
